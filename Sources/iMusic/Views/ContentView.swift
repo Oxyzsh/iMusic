@@ -53,6 +53,10 @@ struct ContentView: View {
         .onReceive(playbackTimer) { _ in
             player.refreshTime()
         }
+        .onReceive(player.$currentTrack.compactMap { $0?.id }) { trackID in
+            selectedTrackID = trackID
+            library.markAsPlayed(trackID)
+        }
         .onDrop(of: [UTType.fileURL], isTargeted: $isDropTargeted) { providers in
             handleDrop(providers)
         }
@@ -152,8 +156,7 @@ struct ContentView: View {
 
     private func play(_ track: MusicTrack) {
         selectedTrackID = track.id
-        player.play(track)
-        library.markAsPlayed(track.id)
+        player.play(track, queue: library.tracks)
     }
 
     private func handleDrop(_ providers: [NSItemProvider]) -> Bool {

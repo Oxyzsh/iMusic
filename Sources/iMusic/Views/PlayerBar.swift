@@ -36,6 +36,28 @@ struct PlayerBar: View {
                 .buttonStyle(.borderedProminent)
                 .disabled(player.currentTrack == nil)
 
+                Menu {
+                    ForEach(PlaybackMode.allCases) { mode in
+                        Button {
+                            player.playbackMode = mode
+                        } label: {
+                            HStack {
+                                Label(mode.title, systemImage: mode.systemImage)
+                                if player.playbackMode == mode {
+                                    Spacer()
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    }
+                } label: {
+                    Image(systemName: player.playbackMode.systemImage)
+                        .frame(width: 24, height: 24)
+                }
+                .menuStyle(.borderlessButton)
+                .accessibilityLabel(player.playbackMode.title)
+                .help(player.playbackMode.title)
+
                 Text("\(player.currentTime.formattedDuration) / \(player.duration.formattedDuration)")
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(.secondary)
